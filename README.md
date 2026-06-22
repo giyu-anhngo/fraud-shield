@@ -48,13 +48,13 @@ flowchart LR
 
 ### Services
 
-| Service | Port | Responsibility | Store |
-|---------|------|----------------|-------|
-| API Gateway | 8080 | Routing, JWT auth, rate limiting | — |
-| Transaction Service | 8081 | Records payments, publishes events via outbox | PostgreSQL |
-| Fraud Scoring | 8082 | Applies rules, idempotent, emits decisions | PostgreSQL |
-| Fraud Report | 8083 | CQRS read model, serves analyst queries | MongoDB |
-| Notification | 8084 | Sends/logs alerts | — |
+| Service | Responsibility | Store |
+|---------|----------------|-------|
+| API Gateway | Routing, JWT auth, rate limiting | — |
+| Transaction Service | Records payments, publishes events via outbox | PostgreSQL |
+| Fraud Scoring | Applies rules, idempotent, emits decisions | PostgreSQL |
+| Fraud Report | CQRS read model, serves analyst queries | MongoDB |
+| Notification | Sends/logs alerts | — |
 
 ### Kafka topics
 
