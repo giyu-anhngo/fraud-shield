@@ -10,11 +10,11 @@
 
 ## Global Constraints
 
-- **Java 21.** The JDK is installed at `C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot`.
-- **NEVER change the global/system `JAVA_HOME`** (it is `C:\zulu8` / Java 8 and is used by the user's main project). Set `$env:JAVA_HOME` **process-scoped only** at the top of each PowerShell command that runs Maven. See the "Build environment" preamble below.
-- **Shell is Windows PowerShell 5.1.** No `&&`/`||` chaining; use `;` and `if ($?) { ... }`. Native git is not on PATH — use the GitHub Desktop git: `& "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"`. A `$git` variable is defined in the preamble below.
+- **Java 21.** The JDK is installed at `<path-to-your-jdk-21>`.
+- **NEVER change the global/system `JAVA_HOME`** (it is your Java 8 install and is used by the user's main project). Set `$env:JAVA_HOME` **process-scoped only** at the top of each PowerShell command that runs Maven. See the "Build environment" preamble below.
+- **Shell is Windows PowerShell 5.1.** No `&&`/`||` chaining; use `;` and `if ($?) { ... }`. Native git is not on PATH — use the GitHub Desktop git: `& "git"`. A `$git` variable is defined in the preamble below.
 - **Docker is NOT installed** on this machine. Any `docker compose` step is a **manual step for the user** (clearly marked), not something the agentic worker runs.
-- **Maven** is on PATH at `C:\Projects\ipensionSuite\tools\apache-maven-3.9.14\bin\mvn.cmd` (`mvn`, v3.9.14).
+- **Maven** is on PATH at `your Maven install` (`mvn`, v3.9.14).
 - **Package root:** `com.fraudshield.transaction`. **Service port:** `8081`. **Topic:** `transactions`, keyed by `accountId`.
 - **Event schema** must match `docs/architecture.md §4` exactly: `eventId, transactionId, accountId, amount, currency, country, merchantId, merchantCategory, channel, occurredAt`.
 - **Flyway owns the schema**; JPA `ddl-auto: validate`.
@@ -23,11 +23,10 @@
 ### Build environment preamble (paste at the top of every Maven/git PowerShell command)
 
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"   # process-scoped; does NOT touch global JAVA_HOME
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"   # process-scoped; does NOT touch global JAVA_HOME
 ```
 
-> The working directory for all commands is the repo root `C:\Projects\pet-project\fraud-shield` unless a step says otherwise. Do not prefix commands with `cd` to the repo root — the harness already starts there.
+> The working directory for all commands is the repo root `<repo-root>` unless a step says otherwise. Do not prefix commands with `cd` to the repo root — the harness already starts there.
 
 ---
 
@@ -170,9 +169,8 @@ Expected: `compose file has required top-level keys`
 - [ ] **Step 4: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add docker-compose.yml infra/postgres/init/01-create-databases.sql
-& $git commit -m "feat(infra): add docker-compose for Postgres + Kafka KRaft"
+git add docker-compose.yml infra/postgres/init/01-create-databases.sql
+git commit -m "feat(infra): add docker-compose for Postgres + Kafka KRaft"
 ```
 
 - [ ] **Step 5: MANUAL USER STEP — runtime verification (after installing Docker Desktop)**
@@ -360,7 +358,7 @@ fraudshield:
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q -DskipTests compile
 ```
 Expected: BUILD SUCCESS (downloads dependencies on first run; no compile errors).
@@ -368,9 +366,8 @@ Expected: BUILD SUCCESS (downloads dependencies on first run; no compile errors)
 - [ ] **Step 5: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add transaction-service/pom.xml transaction-service/src/main/java/com/fraudshield/transaction/TransactionServiceApplication.java transaction-service/src/main/resources/application.yml
-& $git commit -m "feat(transaction): scaffold Spring Boot module"
+git add transaction-service/pom.xml transaction-service/src/main/java/com/fraudshield/transaction/TransactionServiceApplication.java transaction-service/src/main/resources/application.yml
+git commit -m "feat(transaction): scaffold Spring Boot module"
 ```
 
 ---
@@ -570,7 +567,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q -DskipTests compile
 ```
 Expected: BUILD SUCCESS.
@@ -578,9 +575,8 @@ Expected: BUILD SUCCESS.
 - [ ] **Step 6: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add transaction-service/src/main/resources/db/migration/V1__init.sql transaction-service/src/main/java/com/fraudshield/transaction/domain transaction-service/src/main/java/com/fraudshield/transaction/repository
-& $git commit -m "feat(transaction): add JPA entities, repositories, and V1 migration"
+git add transaction-service/src/main/resources/db/migration/V1__init.sql transaction-service/src/main/java/com/fraudshield/transaction/domain transaction-service/src/main/java/com/fraudshield/transaction/repository
+git commit -m "feat(transaction): add JPA entities, repositories, and V1 migration"
 ```
 
 ---
@@ -663,7 +659,7 @@ public class TransactionEventProducer {
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q -DskipTests compile
 ```
 Expected: BUILD SUCCESS.
@@ -671,9 +667,8 @@ Expected: BUILD SUCCESS.
 - [ ] **Step 4: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add transaction-service/src/main/java/com/fraudshield/transaction/messaging
-& $git commit -m "feat(transaction): add TransactionEvent and Kafka producer"
+git add transaction-service/src/main/java/com/fraudshield/transaction/messaging
+git commit -m "feat(transaction): add TransactionEvent and Kafka producer"
 ```
 
 ---
@@ -861,7 +856,7 @@ class TransactionServiceTest {
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q -Dtest=TransactionServiceTest test
 ```
 Expected: FAIL — compilation error, `TransactionService` does not exist yet (or symbol `record` not found).
@@ -960,7 +955,7 @@ public class TransactionService {
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q -Dtest=TransactionServiceTest test
 ```
 Expected: PASS (3 tests).
@@ -968,9 +963,8 @@ Expected: PASS (3 tests).
 - [ ] **Step 6: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add transaction-service/src/main/java/com/fraudshield/transaction/web/dto transaction-service/src/main/java/com/fraudshield/transaction/service transaction-service/src/test/java/com/fraudshield/transaction/service
-& $git commit -m "feat(transaction): add service layer (save + publish) with unit tests"
+git add transaction-service/src/main/java/com/fraudshield/transaction/web/dto transaction-service/src/main/java/com/fraudshield/transaction/service transaction-service/src/test/java/com/fraudshield/transaction/service
+git commit -m "feat(transaction): add service layer (save + publish) with unit tests"
 ```
 
 ---
@@ -1078,7 +1072,7 @@ class TransactionControllerTest {
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q -Dtest=TransactionControllerTest test
 ```
 Expected: FAIL — `TransactionController` does not exist.
@@ -1148,7 +1142,7 @@ public class ApiExceptionHandler {
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q -Dtest=TransactionControllerTest test
 ```
 Expected: PASS (3 tests).
@@ -1157,7 +1151,7 @@ Expected: PASS (3 tests).
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -q test
 ```
 Expected: PASS (6 tests total: 3 service + 3 controller).
@@ -1165,9 +1159,8 @@ Expected: PASS (6 tests total: 3 service + 3 controller).
 - [ ] **Step 7: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add transaction-service/src/main/java/com/fraudshield/transaction/web transaction-service/src/test/java/com/fraudshield/transaction/web
-& $git commit -m "feat(transaction): add POST /transactions controller + error handling"
+git add transaction-service/src/main/java/com/fraudshield/transaction/web transaction-service/src/test/java/com/fraudshield/transaction/web
+git commit -m "feat(transaction): add POST /transactions controller + error handling"
 ```
 
 ---
@@ -1186,7 +1179,7 @@ $git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cm
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml -N wrapper:wrapper
 ```
 Expected: BUILD SUCCESS; `mvnw`, `mvnw.cmd`, and `.mvn/wrapper/maven-wrapper.properties` appear in `transaction-service/`.
@@ -1207,7 +1200,7 @@ This machine keeps the global `JAVA_HOME` on Java 8 for another project, so set
 JDK 21 **for the current shell only** before running Maven:
 
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 ```
 
 Then, from the repo root, start infra and run the service:
@@ -1245,14 +1238,14 @@ docker exec -it fraudshield-kafka /opt/kafka/bin/kafka-console-consumer.sh `
 In `CLAUDE.md`, replace the `./mvnw spring-boot:run` bullet under "## Commands" so it reads:
 
 ```markdown
-- `./mvnw spring-boot:run` — run a service (from its folder). On this machine, first set JDK 21 for the shell only (global JAVA_HOME stays on Java 8 for another project): `$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"`
+- `./mvnw spring-boot:run` — run a service (from its folder). On this machine, first set JDK 21 for the shell only (global JAVA_HOME stays on Java 8 for another project): `$env:JAVA_HOME = "<path-to-your-jdk-21>"`
 ```
 
 - [ ] **Step 4: Verify the wrapper runs**
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 cd transaction-service
 ./mvnw -q -DskipTests compile
 cd ..
@@ -1262,9 +1255,8 @@ Expected: BUILD SUCCESS via the wrapper.
 - [ ] **Step 5: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add transaction-service/mvnw transaction-service/mvnw.cmd transaction-service/.mvn transaction-service/README.md CLAUDE.md
-& $git commit -m "chore(transaction): add Maven wrapper and run instructions"
+git add transaction-service/mvnw transaction-service/mvnw.cmd transaction-service/.mvn transaction-service/README.md CLAUDE.md
+git commit -m "chore(transaction): add Maven wrapper and run instructions"
 ```
 
 ---
@@ -1346,9 +1338,8 @@ a `// TODO Phase 2: replace with outbox` marker at the publish site.
 - [ ] **Step 3: Commit**
 
 ```powershell
-$git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cmd\git.exe"
-& $git add docs/adr/0001-kafka-kraft-single-node.md docs/adr/0002-direct-publish-before-outbox.md
-& $git commit -m "docs(adr): record KRaft single-node and direct-publish decisions"
+git add docs/adr/0001-kafka-kraft-single-node.md docs/adr/0002-direct-publish-before-outbox.md
+git commit -m "docs(adr): record KRaft single-node and direct-publish decisions"
 ```
 
 ---
@@ -1359,7 +1350,7 @@ $git = "C:\Users\NGOA\AppData\Local\GitHubDesktop\app-3.5.4\resources\app\git\cm
 
 Run:
 ```powershell
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 mvn -f transaction-service/pom.xml clean test
 ```
 Expected: BUILD SUCCESS, 6 tests pass.
@@ -1369,7 +1360,7 @@ Expected: BUILD SUCCESS, 6 tests pass.
 From the repo root:
 ```powershell
 docker compose up -d
-$env:JAVA_HOME = "C:\Users\NGOA\AppData\Local\Programs\Eclipse Adoptium\jdk-21.0.9.10-hotspot"
+$env:JAVA_HOME = "<path-to-your-jdk-21>"
 cd transaction-service; ./mvnw spring-boot:run
 ```
 Then POST a transaction (see `transaction-service/README.md`) and confirm: `201`,
