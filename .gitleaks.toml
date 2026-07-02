@@ -1,0 +1,21 @@
+# Gitleaks config — extends the default ruleset with a project allowlist.
+
+title = "FraudShield gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Known-safe matches that are not real secrets"
+
+# Template/doc files that carry placeholder values, not real secrets.
+paths = [
+  '''\.env\.example$''',
+  '''(^|/)README\.md$''',
+  '''(^|/)docs/''',
+]
+
+# Keep any regex allowlist narrow: a broad pattern blinds the scanner to a
+# future real secret that happens to contain it.
+# regexes = []
+# commits = []

@@ -129,6 +129,13 @@ curl -X POST http://localhost:8080/api/transactions \
 curl http://localhost:8080/api/cases?status=OPEN
 ```
 
+**Secret scanning (recommended):** this repo blocks hardcoded secrets at commit
+time via gitleaks. Enable it once per clone:
+
+```bash
+pip install pre-commit && pre-commit install
+```
+
 ## Documentation
 
 - [`docs/business-overview.md`](docs/business-overview.md) — the domain, actors, rules, and the false-positive/false-negative trade-off
