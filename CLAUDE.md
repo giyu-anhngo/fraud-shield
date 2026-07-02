@@ -44,4 +44,10 @@ Java 21, Spring Boot 3.x; Spring Web, Data JPA, Data MongoDB, Spring for Apache 
 - `docs/` — build schedule and roadmap
 
 ## Current status
-**Phase 1 (core), Day 1–2:** Transaction Service (`POST /transactions` → Postgres), Kafka producer to `transactions`, Fraud Scoring consumer with 3 simple rules emitting `fraud-decisions`. Outbox + idempotency come in Phase 2.
+**Phase 1 — DONE.** Transaction Service is built and on `main`: `POST /transactions` validates input, checks the account exists (422 if not), saves to PostgreSQL (Flyway V1 + seed account), and publishes a `TransactionEvent` to the `transactions` topic keyed by `accountId`, returning 201. 6 unit/slice tests (TDD). docker-compose (Postgres + Kafka KRaft) with volumes + healthchecks. Maven wrapper. ADRs 0001 (KRaft) + 0002 (direct-publish-before-outbox — accepted dual-write gap). DB credentials come from `.env` (git-ignored); secret scanning via gitleaks + pre-commit.
+
+**Next — Phase 2 (Kafka backbone):** Fraud Scoring service — consume `transactions`, apply 3–4 simple rules (LARGE_AMOUNT, VELOCITY, COUNTRY_MISMATCH…), emit `fraud-decisions`. Reads account data from Transaction Service via Feign.
+
+**Then — Phase 3 (reliability):** the patterns that make it trustworthy — **outbox + relay** (closes the Phase 1 dual-write gap), **idempotent consumer** (`processed_events`, upsert by `eventId` — not Redis), **dead-letter topic** (`transactions.DLT`) + retries for poison messages.
+
+> **Learning mode:** from Phase 2 the USER writes the code (especially the Phase 3 reliability patterns — the high interview-value ones); Claude acts as interviewer/reviewer — state requirements, write failing tests, hint (don't hand answers), then grill. See the interview-prep memory.

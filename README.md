@@ -140,12 +140,11 @@ pip install pre-commit && pre-commit install
 
 - [`docs/business-overview.md`](docs/business-overview.md) — the domain, actors, rules, and the false-positive/false-negative trade-off
 - [`docs/architecture.md`](docs/architecture.md) — services, data models, event schemas, endpoints
-- [`docs/build-plan.md`](docs/build-plan.md) — the 6-week build plan
-- [`docs/adr/`](docs/adr/) — architecture decision records
+- [`docs/adr/`](docs/adr/) — architecture decision records (ADR 0001 KRaft, 0002 direct-publish-before-outbox)
 
 ## Roadmap
 
-- [ ] **Week 1** — Repo, Docker Compose (Postgres + Kafka), Transaction Service intake
+- [x] **Week 1** — Repo, Docker Compose (Postgres + Kafka), Transaction Service intake ✅
 - [ ] **Week 2** — Kafka backbone: publish + consume, Fraud Scoring with simple rules
 - [ ] **Week 3** — Reliability: outbox, idempotency, dead-letter topic
 - [ ] **Week 4** — CQRS read side: Fraud Report (MongoDB) + Notification
