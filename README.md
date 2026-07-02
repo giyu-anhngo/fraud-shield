@@ -2,8 +2,6 @@
 
 > A distributed, near-real-time fraud detection platform built with **Java 21**, **Spring Boot**, and **Apache Kafka** — a learning project for studying microservices and event-driven architecture.
 
-🚧 **Status: in active development** (see [Roadmap](#roadmap)). The architecture and design are final; services are being implemented over a 6-week plan.
-
 ---
 
 ## Overview
@@ -31,14 +29,14 @@ The goal of the project is to demonstrate event-driven microservices and the rel
 flowchart LR
     Client([Client / Analyst]) -->|REST| GW[API Gateway<br/>JWT · rate limit]
     GW -->|POST /transactions| TX[Transaction Service]
-    GW -->|GET /cases| FR[Fraud Report]
     TX --> PG[(PostgreSQL)]
     TX -. outbox .-> K{{Apache Kafka}}
     K -. transactions .-> FS[Fraud Scoring]
-    FS -->|Feign + circuit breaker| TX
     FS -. fraud-decisions .-> K
-    K -. fraud-decisions .-> FR
     K -. fraud-decisions .-> NT[Notification]
+    GW -->|GET /cases| FR[Fraud Report]
+    FS -->|Feign + circuit breaker| TX
+    K -. fraud-decisions .-> FR
     FR --> MG[(MongoDB)]
 ```
 
