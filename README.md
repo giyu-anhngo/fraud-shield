@@ -123,7 +123,7 @@ cd transaction-service && ./mvnw spring-boot:run
 # Submit a transaction
 curl -X POST http://localhost:8080/api/transactions \
   -H "Content-Type: application/json" \
-  -d '{"accountId":"...","amount":1299.00,"currency":"CHF","country":"FR","channel":"ONLINE"}'
+  -d '{"accountId":"...","amount":1299.00,"currency":"USD","country":"FR","channel":"ONLINE"}'
 
 # Query flagged cases (analyst)
 curl http://localhost:8080/api/cases?status=OPEN
